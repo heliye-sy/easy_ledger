@@ -21,11 +21,13 @@ class LoginController extends GetxController {
       case 400:
         switch (jsonDecode(response.bodyString!)['error']['message']) {
           case 'Invalid identifier or password':
-            message = '用户名或密码错误！';
+            message = '用户名/邮箱或密码错误！';
           case 'Your account has been blocked by an administrator':
             message = '用户被封禁，请联系管理员！';
+          case 'Your account email is not confirmed':
+            message = '您的帐户电子邮件还未验证！';
           case 'Email or Username are already taken':
-            message = '邮箱或者用户名被占用！';
+            message = '邮箱或者用户名已被使用！';
           default:
             message = '未知错误！请联系开发者！${response.statusCode}';
         }

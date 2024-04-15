@@ -58,13 +58,17 @@ class LoginView extends GetView<LoginController> {
                           labelText: '邮箱',
                         ),
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return '邮箱不能为空';
-                          }
-                          if(!RegExp(r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$').hasMatch(value)){
-                            return '邮箱地址无效';
-                          }
-                          return null;
+                          if(!controller.isLogin.value){
+                              if (value!.isEmpty) {
+                                return '邮箱不能为空';
+                              }
+                              if (!RegExp(
+                                      r'^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$')
+                                  .hasMatch(value)) {
+                                return '邮箱地址无效';
+                              }
+                            }
+                            return null;
                         },
                       ),
                     ),),
@@ -95,16 +99,18 @@ class LoginView extends GetView<LoginController> {
                         ),
                         obscureText: true,
                         validator: (value) {
-                          if (value!.isEmpty) {
-                            return '密码不能为空';
-                          }
-                          if (value.length < 6) {
-                            return '密码长度必须大于等于 6';
-                          }
-                          if (value != passwordController.text) {
-                            return '两次填写的密码不一致!';
-                          }
-                          return null;
+                          if (!controller.isLogin.value) {
+                              if (value!.isEmpty) {
+                                return '密码不能为空';
+                              }
+                              if (value.length < 6) {
+                                return '密码长度必须大于等于 6';
+                              }
+                              if (value != passwordController.text) {
+                                return '两次填写的密码不一致!';
+                              }
+                            }
+                            return null;
                         },
                       ),
                     ),),
@@ -115,7 +121,7 @@ class LoginView extends GetView<LoginController> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Obx(() => TextButton(
+                          TextButton(
                             onPressed: () async {
                               if (loginFormKey.currentState!.validate()) {
                                 // 表单验证通过
@@ -143,8 +149,8 @@ class LoginView extends GetView<LoginController> {
                               foregroundColor: MaterialStateProperty.all(Colors.black),
                               backgroundColor: MaterialStateProperty.all(Colors.yellow),
                             ),
-                            child: Text(controller.isLogin.value ? '登录' : '注册'),
-                          )),
+                            child: Obx(() => Text(controller.isLogin.value ? '登录' : '注册')),
+                          ),
 
                           const SizedBox(width: 100,),
 
