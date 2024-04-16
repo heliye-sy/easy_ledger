@@ -11,20 +11,28 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: CustomWindow(
-        body: Container(
-          child: controller.obx(
-                (user) {
-              return Text(user?.username ?? '');
-            },
-            onError: (error) => Center(
-              child: TextButton(
-                onPressed: () => Get.offAllNamed('/login'),
-                child: Text(
-                    error!
-                ),
+        body: Column(
+          children: [
+            AppBar(
+              // leading: Image.network(''),
+              backgroundColor: Colors.blue,
+            ),
+            Container(
+              child: controller.obx(
+                    (user) {
+                      return Text(user?.username ?? '');
+                },
+                onError: (error) => Center(
+                  child: TextButton(
+                    onPressed: () => Get.offAllNamed('/login'),
+                    child: Text(
+                        error!
+                    ),
+                  ),
+                ), //出错界面显示
               ),
-            ), //出错界面显示
-          ),
+            )
+          ],
         ),
       ),
       bottomNavigationBar: TextButton(

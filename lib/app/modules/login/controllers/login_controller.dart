@@ -15,9 +15,13 @@ class LoginController extends GetxController {
     switch (response.statusCode) {
       case 200:
         final SharedPreferences prefs = await SharedPreferences.getInstance();
-        await prefs.setString('jwt', jsonDecode(response.bodyString!)['jwt']);
-        message = '欢迎用户：${jsonDecode(response.bodyString!)['user']['username']}';
-        Get.offAllNamed('/home');
+        Map<String, dynamic> body = jsonDecode(response.bodyString!);
+        if(body.containsKey('jwt')) {
+          await prefs.setString('jwt', body['jwt']);
+          message =
+              '欢迎用户：${body['user']['username']}';
+          Get.offAllNamed('/home');
+        }
       case 400:
         switch (jsonDecode(response.bodyString!)['error']['message']) {
           case 'Invalid identifier or password':

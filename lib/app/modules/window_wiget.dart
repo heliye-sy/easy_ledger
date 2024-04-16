@@ -16,52 +16,29 @@ class CustomWindow extends StatelessWidget {
         color: Colors.black,
         child: Column(
           children: [
-            Container(
-              decoration: const BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [Colors.red, Colors.orange, Colors.yellow],
-                ),
-              ),
-              child: WindowTitleBarBox(
-                child: Row(
-                  children: [
-                    Expanded(child: MoveWindow()),
-                    Row(
-                      children: [
-                        MinimizeWindowButton(),
-                        appWindow.isMaximized ? RestoreWindowButton() : MaximizeWindowButton(),
-                        CloseWindowButton(),
-                      ],
-                    ),
-                  ],
-                ),
+            WindowTitleBarBox(
+              child: Row(
+                children: [
+                  Expanded(child: MoveWindow()),
+                  Row(
+                    children: [
+                      MinimizeWindowButton(),
+                      appWindow.isMaximized ? RestoreWindowButton() : MaximizeWindowButton(),
+                      CloseWindowButton(),
+                    ],
+                  ),
+                ],
               ),
             ),
             Expanded(
-              child: Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [Colors.red, Colors.orange, Colors.yellow],
-                  ),
-                ),
-                child: body,
-              ),
+              child: body,
             )
           ],
         ),
       );
     }
     else{
-      return Container(
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.red, Colors.orange, Colors.yellow],
-          ),
-        ),
-        child: body,
-      );
+      return body;
     }
   }
 }
