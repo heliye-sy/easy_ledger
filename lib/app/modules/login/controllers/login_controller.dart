@@ -7,7 +7,7 @@ import '../providers/login_provider.dart';
 
 class LoginController extends GetxController {
   final loginProvider = Get.find<LoginProvider>();
-  final isLogin = true.obs;
+  final isLogin = 'login'.obs;
 
   Future<String> loginUp(String url, Map<String, String> user) async {
     Response response = await loginProvider.login(url, user);

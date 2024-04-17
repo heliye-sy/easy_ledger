@@ -9,11 +9,10 @@ class CustomWindow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if(PlatformUtils.isPc) {
       return WindowBorder(
         width: 0,
-        color: Colors.black,
+        color: Colors.white,
         child: Column(
           children: [
             WindowTitleBarBox(
