@@ -11,6 +11,7 @@ dependencies:
   bitsdojo_window: ^0.1.5
   shared_preferences: ^2.2.3
   screen_go: ^1.1.6
+  sidebarx: ^0.17.1
   flutter: 
     sdk: flutter
 
@@ -18,7 +19,10 @@ dev_dependencies:
   flutter_lints: ^3.0.0
   flutter_test: 
     sdk: flutter
+  flutter_localizations:
+    sdk: flutter
 
 flutter: 
   uses-material-design: true
-
+  assets:
+    - assets/images/

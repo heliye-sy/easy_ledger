@@ -10,9 +10,9 @@ class LoginProvider extends GetConnect {
     });
   }
 
-  //登录和注册
-  Future<Response> login(String url, Map<String, String> user) async {
-    final response = await post('/local$url', user);
+  //登录和注册和忘记密码
+  Future<Response> lrr(String url, Map<String, String> q) async {
+    final response = await post(url, q);
     return response;
   }
 

@@ -38,11 +38,12 @@ class FormView extends GetView<LoginController> {
     final identifierController = TextEditingController();
     final userNameController = TextEditingController();
     final emailController = TextEditingController();
+    final codeController = TextEditingController();
     final passwordController = TextEditingController();
     final password0Controller = TextEditingController();
     final isShowPassword = true.obs;
     return Container(
-      padding: const EdgeInsets.all(50),
+      padding: const EdgeInsets.only(left: 50.0,top: 30.0,right: 50.0),
       child: Form(
         key: loginFormKey,
         child: Column(
@@ -77,7 +78,7 @@ class FormView extends GetView<LoginController> {
                 decoration: inputDecoration(labelText: '邮箱'),
                 cursorColor: Colors.black,
                 validator: (value) {
-                  if(controller.isLogin.value != 'login'){
+                  if(controller.isLogin.value == 'register'){
                     if (value!.isEmpty) {
                       return '邮箱不能为空';
                     }
@@ -91,6 +92,50 @@ class FormView extends GetView<LoginController> {
                 },
               ),
             ),),
+
+            Obx(() => Offstage(
+              offstage: controller.isLogin.value == 'rmPassword' ? false : true,
+              child: Column(
+                children: [
+                  const SizedBox(height: 10,),
+                  TextFormField(
+                    controller: codeController,
+                    decoration: inputDecoration(
+                      labelText: '重置令牌',
+                      icon: TextButton(
+                          onPressed: () async {
+                            String message = await controller.lrr(
+                                '/forgot-password',
+                                {'email': emailController.text}
+                            );
+                            Get.snackbar(
+                                '提示',
+                                message,
+                                snackPosition: SnackPosition.TOP,
+                                backgroundColor: Colors.blueAccent
+                            );
+                          },
+                          style: ButtonStyle(
+                            foregroundColor: MaterialStateProperty.all(Colors.white),
+                            backgroundColor: MaterialStateProperty.all(Colors.blueAccent),
+                          ),
+                          child: const Text('获取令牌')
+                      )
+                    ),
+                    cursorColor: Colors.black,
+                    validator: (value) {
+                      if(controller.isLogin.value == 'rmPassword'){
+                        if (value!.isEmpty) {
+                          return '重置令牌不能为空';
+                        }
+                      }
+                      return null;
+                    },
+                  )
+                ],
+              ),
+            )),
+
 
             const SizedBox(height: 10,),
 
@@ -159,6 +204,7 @@ class FormView extends GetView<LoginController> {
             const SizedBox(height: 10,),
 
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly, //元素与空白互相间隔
               children: [
                 GestureDetector(
                   onTap: ()=>controller.isLogin.value = controller.isLogin.value =='login' ? 'register' : 'login',
@@ -169,7 +215,7 @@ class FormView extends GetView<LoginController> {
                     ),
                   ))
                 ),
-                const SizedBox(width: 10,),
+
                 GestureDetector(
                     onTap: ()=>controller.isLogin.value = controller.isLogin.value =='login' ? 'rmPassword' : 'login',
                     child: Obx(() => Text(
@@ -188,21 +234,65 @@ class FormView extends GetView<LoginController> {
               onPressed: () async {
                 if (loginFormKey.currentState!.validate()) {
                   // 表单验证通过
-                  // Map<String,String> user = controller.isLogin.value ? {
-                  //   "identifier": identifierController.text,
-                  //   "password": passwordController.text
-                  // } : {
-                  //   "username": userNameController.text,
-                  //   "email": emailController.text,
-                  //   "password": passwordController.text
-                  // };
-                  // String message =  await controller.loginUp(controller.controller.isLogin.value ? '' : '/register', user);
-                  // Get.snackbar(
-                  //     '提示',
-                  //     message,
-                  //     snackPosition: SnackPosition.TOP,
-                  //     backgroundColor: Colors.green
-                  // );
+                  String url = '';
+                  Map<String,String> user = {};
+                  switch (controller.isLogin.value) {
+                    case 'login':
+                      url = '/local';
+                      user = {
+                        "identifier": identifierController.text,
+                        "password": passwordController.text
+                      };
+                    case 'register':
+                      url = '/local/register';
+                      user = {
+                        "username": userNameController.text,
+                        "email": emailController.text,
+                        "password": password0Controller.text
+                      };
+                    case 'rmPassword':
+                      url = '/reset-password';
+                      user = {
+                        "code": codeController.text,
+                        "password": passwordController.text,
+                        "passwordConfirmation": password0Controller.text
+                      };
+                  }
+                  String message =  await controller.lrr(url, user);
+                  if (message == 'r') {
+                    final codeController = TextEditingController();
+                    await Get.defaultDialog(
+                      title: '请输入验证code',
+                      content: TextField(
+                        controller: codeController,
+                      ),
+                      confirm: TextButton(
+                        onPressed: () async {
+                          int? code = await controller.email(codeController.text);
+                          if (code == 200) {
+                            message = '注册完成';
+                            identifierController.text = userNameController.text;
+                            controller.isLogin.value = 'login';
+                            Get.back();
+                          } else {
+                            Get.snackbar(
+                                '提示',
+                                'code错误',
+                                snackPosition: SnackPosition.TOP,
+                                backgroundColor: Colors.blueAccent
+                            );
+                          }
+                        },
+                        child: const Text('确认'),
+                      ),
+                    );
+                  }
+                  Get.snackbar(
+                      '提示',
+                      message,
+                      snackPosition: SnackPosition.TOP,
+                      backgroundColor: Colors.blueAccent
+                  );
                 } else {
                   // 表单验证失败
                   print('表单验证失败');

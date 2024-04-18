@@ -9,18 +9,21 @@ class User {
   String? updatedAt;
   double? balance;
   List<Ledgers>? ledgers;
+  String? avatar;
 
-  User(
-      {this.id,
-      this.username,
-      this.email,
-      this.provider,
-      this.confirmed,
-      this.blocked,
-      this.createdAt,
-      this.updatedAt,
-      this.balance,
-      this.ledgers});
+  User({
+    this.id,
+    this.username,
+    this.email,
+    this.provider,
+    this.confirmed,
+    this.blocked,
+    this.createdAt,
+    this.updatedAt,
+    this.balance,
+    this.ledgers,
+    this.avatar,
+      });
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -37,7 +40,8 @@ class User {
       json['ledgers'].forEach((v) {
         ledgers?.add(Ledgers.fromJson(v));
       });
-    }
+    };
+    avatar = json['avatar'];
   }
 
   Map<String, dynamic> toJson() {
@@ -54,6 +58,7 @@ class User {
     if (ledgers != null) {
       data['ledgers'] = ledgers?.map((v) => v.toJson()).toList();
     }
+    data['avatar'] = avatar;
     return data;
   }
 }
