@@ -16,7 +16,9 @@ class UserProvider extends GetConnect {
         }
       }
     };
+
     httpClient.baseUrl = 'http://111.229.84.51:1337/api';
+
     // 请求拦截
     httpClient.addRequestModifier<void>((request) async {
       final SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -28,7 +30,7 @@ class UserProvider extends GetConnect {
   }
 
   Future<User?> getUser() async {
-    final response = await get('/users/me',query: {'populate': '*'});
+    final response = await get('/users/me',query: {"populate": "*"});
     return response.body;
   }
 

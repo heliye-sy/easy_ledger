@@ -1,47 +1,50 @@
 class User {
-  int? id;
-  String? username;
-  String? email;
-  String? provider;
-  bool? confirmed;
-  bool? blocked;
-  String? createdAt;
+  int id;
+  String username;
+  String email;
+  String provider;
+  bool confirmed;
+  bool blocked;
+  String createdAt;
   String? updatedAt;
-  double? balance;
-  List<Ledgers>? ledgers;
+  num? balance;
+  List<Ledger>? ledgers;
   String? avatar;
 
   User({
-    this.id,
-    this.username,
-    this.email,
-    this.provider,
-    this.confirmed,
-    this.blocked,
-    this.createdAt,
-    this.updatedAt,
+    required this.id,
+    required this.username,
+    required this.email,
+    required this.provider,
+    required this.confirmed,
+    required this.blocked,
+    required this.createdAt,
+    required this.updatedAt,
     this.balance,
     this.ledgers,
-    this.avatar,
-      });
+    this.avatar
+  });
 
-  User.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    username = json['username'];
-    email = json['email'];
-    provider = json['provider'];
-    confirmed = json['confirmed'];
-    blocked = json['blocked'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    balance = (json['balance'] as num?)?.toDouble();
+  factory User.fromJson(Map<String, dynamic> json) {
+    List<Ledger> ledgers = [];
     if (json['ledgers'] != null) {
-      ledgers = <Ledgers>[];
       json['ledgers'].forEach((v) {
-        ledgers?.add(Ledgers.fromJson(v));
+        ledgers.add(Ledger.fromJson(v));
       });
-    };
-    avatar = json['avatar'];
+    }
+    return User(
+      id : json['id'],
+      username : json['username'],
+      email : json['email'],
+      provider : json['provider'],
+      confirmed : json['confirmed'],
+      blocked : json['blocked'],
+      createdAt : json['createdAt'],
+      updatedAt : json['updatedAt'],
+      balance : json['balance'],
+      ledgers : ledgers,
+      avatar : json['avatar']['url'],
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -58,60 +61,65 @@ class User {
     if (ledgers != null) {
       data['ledgers'] = ledgers?.map((v) => v.toJson()).toList();
     }
-    data['avatar'] = avatar;
+    if (avatar != null) {
+      data['avatar'] = avatar;
+    }
     return data;
   }
 }
 
-class Ledgers {
-  int? id;
-  String? name;
-  String? createdAt;
-  String? updatedAt;
-  String? publishedAt;
-  double? amount;
-  String? date;
-  String? category;
+class Ledger {
+  int id;
+  String name;
+  double amount;
+  String date;
+  String category;
+  String payType;
   String? remark;
-  String? payType;
+  String createdAt;
+  String updatedAt;
+  String? publishedAt;
 
-  Ledgers(
-      {this.id,
-      this.name,
-      this.createdAt,
-      this.updatedAt,
-      this.publishedAt,
-      this.amount,
-      this.date,
-      this.category,
-      this.remark,
-      this.payType});
+  Ledger({
+    required this.id,
+    required this.name,
+    required this.amount,
+    required this.date,
+    required this.category,
+    required this.payType,
+    this.remark,
+    required this.createdAt,
+    required this.updatedAt,
+    this.publishedAt
+  });
 
-  Ledgers.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
-    name = json['name'];
-    createdAt = json['createdAt'];
-    updatedAt = json['updatedAt'];
-    publishedAt = json['publishedAt'];
-    amount = (json['amount'] as num?)?.toDouble();
-    date = json['date'];
-    category = json['category'];
-    remark = json['remark'];
-    payType = json['payType'];
+  factory Ledger.fromJson(Map<String, dynamic> json) {
+    return Ledger(
+      id : json['id'],
+      name : json['name'],
+      amount : json['amount'],
+      date : json['date'],
+      category : json['category'],
+      payType : json['payType'],
+      remark : json['remark'],
+      createdAt : json['createdAt'],
+      updatedAt : json['updatedAt'],
+      publishedAt : json['publishedAt'],
+    );
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['id'] = id;
     data['name'] = name;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['publishedAt'] = publishedAt;
     data['amount'] = amount;
     data['date'] = date;
     data['category'] = category;
-    data['remark'] = remark;
     data['payType'] = payType;
+    data['remark'] = remark;
+    data['createdAt'] = createdAt;
+    data['updatedAt'] = updatedAt;
+    data['publishedAt'] = publishedAt;
     return data;
   }
 }

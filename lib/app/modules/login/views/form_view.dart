@@ -276,10 +276,9 @@ class FormView extends GetView<LoginController> {
                             Get.back();
                           } else {
                             Get.snackbar(
-                                '提示',
-                                'code错误',
-                                snackPosition: SnackPosition.TOP,
-                                backgroundColor: Colors.blueAccent
+                              '提示',
+                              'code错误',
+                              snackPosition: SnackPosition.TOP,
                             );
                           }
                         },
@@ -288,10 +287,9 @@ class FormView extends GetView<LoginController> {
                     );
                   }
                   Get.snackbar(
-                      '提示',
-                      message,
-                      snackPosition: SnackPosition.TOP,
-                      backgroundColor: Colors.blueAccent
+                    '提示',
+                    message,
+                    snackPosition: SnackPosition.TOP,
                   );
                 } else {
                   // 表单验证失败
