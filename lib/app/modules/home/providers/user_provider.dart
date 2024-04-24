@@ -29,6 +29,7 @@ class UserProvider extends GetConnect {
     });
   }
 
+  // 获取jwt令牌
   Future<User?> getUser() async {
     final response = await get('/users/me',query: {"populate": "*"});
     return response.body;
