@@ -1,11 +1,11 @@
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../user_model.dart';
-import '../providers/user_provider.dart';
+import '../home_model.dart';
+import '../providers/home_provider.dart';
 
 class HomeController extends GetxController with StateMixin<List<Ledger>>{
-  final userProvider = Get.find<UserProvider>();
+  final userProvider = Get.find<HomeProvider>();
   var user = User(
     id: 0,
     username: '',
@@ -17,25 +17,36 @@ class HomeController extends GetxController with StateMixin<List<Ledger>>{
     updatedAt: '',
   ).obs;
 
-  void getUser() async {
+  Future<void> getUser() async {
+      User? userH = await userProvider.getUser();
+      //请求出错时
+      if(userH == null){
+        Get.offAllNamed('/login');
+      }else{
+        //请求成功时，显示数据
+        user.value = userH;
+      }
+    }
+
+  void getLedgers(String userId, String payType) async {
     //刚开始显示加载中。。
     change(null,status: RxStatus.loading());
     //执行网络请求
-    User? userR = await userProvider.getUser();
+    List<Ledger>? ledgers = await userProvider.getLedgers(userId, payType);
     //请求出错时
-    if(userR == null){
-      Get.offAllNamed('/login');
+    if(ledgers == null){
+      change(ledgers, status: RxStatus.error('获取账单记录失败'));
     }else{
       //请求成功时，显示数据
-      user.value = userR;
-      change(userR.ledgers, status: RxStatus.success());
+      change(ledgers, status: RxStatus.success());
     }
   }
 
   @override
-  void onInit() {
+  void onInit() async {
     super.onInit();
-    getUser();
+    await getUser();
+    if(user.value.id != 0) getLedgers(user.value.id.toString(), "weChat");
   }
 
   void rmJwt() async {

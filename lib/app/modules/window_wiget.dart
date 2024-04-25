@@ -12,21 +12,24 @@ class CustomWindow extends StatelessWidget {
     if(PlatformUtils.isPc) {
       return WindowBorder(
         width: 0,
-        color: Colors.white,
+        color: Colors.grey,
         child: Column(
           children: [
             WindowTitleBarBox(
-              child: Row(
-                children: [
-                  Expanded(child: MoveWindow()),
-                  Row(
-                    children: [
-                      MinimizeWindowButton(),
-                      appWindow.isMaximized ? RestoreWindowButton() : MaximizeWindowButton(),
-                      CloseWindowButton(),
-                    ],
-                  ),
-                ],
+              child: Container(
+                color: Colors.blue,
+                child: Row(
+                  children: [
+                    Expanded(child: MoveWindow()),
+                    Row(
+                      children: [
+                        MinimizeWindowButton(),
+                        appWindow.isMaximized ? RestoreWindowButton() : MaximizeWindowButton(),
+                        CloseWindowButton(),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             Expanded(

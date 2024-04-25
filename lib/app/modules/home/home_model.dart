@@ -8,7 +8,6 @@ class User {
   String createdAt;
   String? updatedAt;
   num? balance;
-  List<Ledger>? ledgers;
   String? avatar;
 
   User({
@@ -21,17 +20,11 @@ class User {
     required this.createdAt,
     required this.updatedAt,
     this.balance,
-    this.ledgers,
     this.avatar
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
     List<Ledger> ledgers = [];
-    if (json['ledgers'] != null) {
-      json['ledgers'].forEach((v) {
-        ledgers.add(Ledger.fromJson(v));
-      });
-    }
     return User(
       id : json['id'],
       username : json['username'],
@@ -42,7 +35,6 @@ class User {
       createdAt : json['createdAt'],
       updatedAt : json['updatedAt'],
       balance : json['balance'],
-      ledgers : ledgers,
       avatar : json['avatar']['url'],
     );
   }
@@ -58,9 +50,6 @@ class User {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     data['balance'] = balance;
-    if (ledgers != null) {
-      data['ledgers'] = ledgers?.map((v) => v.toJson()).toList();
-    }
     if (avatar != null) {
       data['avatar'] = avatar;
     }
@@ -71,7 +60,7 @@ class User {
 class Ledger {
   int id;
   String name;
-  double amount;
+  num amount;
   String date;
   String category;
   String payType;
@@ -94,17 +83,18 @@ class Ledger {
   });
 
   factory Ledger.fromJson(Map<String, dynamic> json) {
+    final productAttributes = json['attributes'];
     return Ledger(
       id : json['id'],
-      name : json['name'],
-      amount : json['amount'],
-      date : json['date'],
-      category : json['category'],
-      payType : json['payType'],
-      remark : json['remark'],
-      createdAt : json['createdAt'],
-      updatedAt : json['updatedAt'],
-      publishedAt : json['publishedAt'],
+      name : productAttributes['name'],
+      amount : productAttributes['amount'],
+      date : productAttributes['date'],
+      category : productAttributes['category'],
+      payType : productAttributes['payType'],
+      remark : productAttributes['remark'],
+      createdAt : productAttributes['createdAt'],
+      updatedAt : productAttributes['updatedAt'],
+      publishedAt : productAttributes['publishedAt'],
     );
   }
 

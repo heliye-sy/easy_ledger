@@ -92,12 +92,19 @@ class DrawerView extends GetView<HomeController> {
       ),
       items: [
         SidebarXItem(
+            onTap: () => controller.getLedgers(controller.user.value.id.toString(), 'weChat'),
             icon: Icons.wechat,
             label: '微信'
         ),
         SidebarXItem(
+            onTap: () => controller.getLedgers(controller.user.value.id.toString(), 'Alipay'),
             icon: Ionicons.logo_alipay,
             label: '支付宝'
+        ),
+        SidebarXItem(
+            onTap: () => controller.getLedgers(controller.user.value.id.toString(), 'other'),
+            icon: Icons.menu,
+            label: '其他'
         ),
         SidebarXItem(
           icon: Icons.exit_to_app,

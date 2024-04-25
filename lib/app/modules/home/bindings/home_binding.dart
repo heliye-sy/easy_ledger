@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
 import '../controllers/home_controller.dart';
-import '../providers/user_provider.dart';
+import '../providers/home_provider.dart';
 
 class HomeBinding extends Bindings {
   @override
@@ -9,8 +9,8 @@ class HomeBinding extends Bindings {
     Get.lazyPut<HomeController>(
           () => HomeController(),
     );
-    Get.lazyPut<UserProvider>(
-          () => UserProvider(),
+    Get.lazyPut<HomeProvider>(
+          () => HomeProvider(),
     );
   }
 }
