@@ -24,7 +24,6 @@ class User {
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
-    List<Ledger> ledgers = [];
     return User(
       id : json['id'],
       username : json['username'],
@@ -35,7 +34,7 @@ class User {
       createdAt : json['createdAt'],
       updatedAt : json['updatedAt'],
       balance : json['balance'],
-      avatar : json['avatar']['url'],
+      avatar : json['avatar'] != null ? json['avatar']['url'] : null
     );
   }
 
@@ -110,6 +109,38 @@ class Ledger {
     data['createdAt'] = createdAt;
     data['updatedAt'] = updatedAt;
     data['publishedAt'] = publishedAt;
+    return data;
+  }
+}
+
+class Pagination {
+  int page;
+  int pageSize;
+  int pageCount;
+  int total;
+
+  Pagination({
+    required this.page,
+    required this.pageSize,
+    required this.pageCount,
+    required this.total,
+  });
+
+  factory Pagination.fromJson(Map<String, dynamic> json) {
+    return Pagination(
+      page: json['page'],
+      pageSize: json['pageSize'],
+      pageCount: json['pageCount'],
+      total: json['total']
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['page'] = page;
+    data['pageSize'] = pageSize;
+    data['pageCount'] = pageCount;
+    data['total'] = total;
     return data;
   }
 }

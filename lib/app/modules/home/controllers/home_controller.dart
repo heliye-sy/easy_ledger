@@ -5,7 +5,7 @@ import '../home_model.dart';
 import '../providers/home_provider.dart';
 
 class HomeController extends GetxController with StateMixin<List<Ledger>>{
-  final userProvider = Get.find<HomeProvider>();
+  final homeProvider = Get.find<HomeProvider>();
   var user = User(
     id: 0,
     username: '',
@@ -18,7 +18,7 @@ class HomeController extends GetxController with StateMixin<List<Ledger>>{
   ).obs;
 
   Future<void> getUser() async {
-      User? userH = await userProvider.getUser();
+      User? userH = await homeProvider.getUser();
       //请求出错时
       if(userH == null){
         Get.offAllNamed('/login');
@@ -32,14 +32,20 @@ class HomeController extends GetxController with StateMixin<List<Ledger>>{
     //刚开始显示加载中。。
     change(null,status: RxStatus.loading());
     //执行网络请求
-    List<Ledger>? ledgers = await userProvider.getLedgers(userId, payType);
+    List<Ledger>? ledgers = await homeProvider.getLedgers(userId, payType);
     //请求出错时
     if(ledgers == null){
       change(ledgers, status: RxStatus.error('获取账单记录失败'));
-    }else{
+    }else if (ledgers.isNotEmpty){
       //请求成功时，显示数据
       change(ledgers, status: RxStatus.success());
+    } else {
+      change(ledgers, status: RxStatus.empty());
     }
+  }
+
+  void deleteLedgers(int id) {
+    homeProvider.deleteLedgers(id);
   }
 
   @override

@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:get/get.dart';
@@ -63,18 +65,21 @@ class HomeView extends GetView<HomeController> {
                       return controller.obx(
                               (ledgers) => ListView(
                                 padding: const EdgeInsets.only(top: 10),
-                                children: ledgers!.map((e) => Slidable(
+                                children: ledgers!.map((ledger) => Slidable(
                                     endActionPane: ActionPane(
                                       motion: const ScrollMotion(),
                                       dismissible: DismissiblePane(onDismissed: () {}),
 
-                                      children: const [
-                                        SlidableAction(
-                                          onPressed: doNothing,
-                                          backgroundColor: Color(0xFFFE4A49),
-                                          foregroundColor: Colors.white,
-                                          icon: Icons.delete,
-                                          label: '删除',
+                                      children: [
+                                        TextButton.icon(
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                          label: const Text(
+                                            '删除'
+                                          ),
+                                          onPressed: () => controller.deleteLedgers(ledger.id),
                                         ),
                                         SlidableAction(
                                           onPressed: doNothing,
@@ -94,14 +99,18 @@ class HomeView extends GetView<HomeController> {
                                         boxShadow: const [BoxShadow()],
                                       ),
                                       child: ListTile(
-                                        leading: Text(e.date),
-                                        title: Text(e.name),
-                                        subtitle: Text(e.remark ?? ''),
-                                        trailing: Text(mio[e.category]! + e.amount.toString()),
+                                        // leading: Text(ledger.date),
+                                        leading: Text(ledger.id.toString()),
+                                        title: Text(ledger.name),
+                                        subtitle: Text(ledger.remark ?? ''),
+                                        trailing: Text(mio[ledger.category]! + ledger.amount.toString()),
                                       ),
                                     )
                                 )).toList(),
-                              ));
+                              ),
+                        onEmpty: const Text('没有数据'), //空数据显示
+                        onError: (error) => Text(error!), //出错界面显示
+                      );
                       },
                   ),
                 ),

@@ -44,15 +44,16 @@ class HomeProvider extends GetConnect {
           "filters[user][id][\$eq]": userId,
           "filters[payType][\$eqi]": payType
         });
-    List<Ledger>? ledgers =
-    response.statusCode == 200
-        ?
-    (response.body['data'] as List).map((ledger) => Ledger.fromJson(ledger)).toList()
-        :
-    null;
+    List<Ledger>? ledgers;
+    Pagination pagination;
+    if (response.statusCode == 200) {
+      ledgers = (response.body['data'] as List).map((ledger) => Ledger.fromJson(ledger)).toList();
+    }
     return ledgers;
   }
 
   Future<Response<User>> postUser(User user) async => await post('user', user);
-  Future<Response> deleteUser(int id) async => await delete('user/$id');
+
+  // 删除一条账单记录
+  Future<Response> deleteLedgers(int id) async => await delete('/ledgers/$id');
 }
