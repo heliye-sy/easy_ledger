@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../home_model.dart';
 import '../providers/home_provider.dart';
 
-class HomeController extends GetxController with StateMixin<List<Ledger>>{
+class HomeController extends GetxController with StateMixin<Ledgers>{
   final homeProvider = Get.find<HomeProvider>();
   var user = User(
     id: 0,
@@ -16,6 +16,16 @@ class HomeController extends GetxController with StateMixin<List<Ledger>>{
     createdAt: '',
     updatedAt: '',
   ).obs;
+
+  var ledger = Ledger(
+      id: 0,
+      name: '',
+      amount: '',
+      date: DateTime.now(),
+      payType: '',
+      createdAt: '',
+      updatedAt: ''
+  );
 
   Future<void> getUser() async {
       User? userH = await homeProvider.getUser();
@@ -32,11 +42,11 @@ class HomeController extends GetxController with StateMixin<List<Ledger>>{
     //刚开始显示加载中。。
     change(null,status: RxStatus.loading());
     //执行网络请求
-    List<Ledger>? ledgers = await homeProvider.getLedgers(userId, payType);
+    Ledgers? ledgers = await homeProvider.getLedgers(userId, payType);
     //请求出错时
     if(ledgers == null){
       change(ledgers, status: RxStatus.error('获取账单记录失败'));
-    }else if (ledgers.isNotEmpty){
+    }else if (ledgers.data.isNotEmpty){
       //请求成功时，显示数据
       change(ledgers, status: RxStatus.success());
     } else {
@@ -44,8 +54,14 @@ class HomeController extends GetxController with StateMixin<List<Ledger>>{
     }
   }
 
-  void deleteLedgers(int id) {
-    homeProvider.deleteLedgers(id);
+  void addLedger(Ledger ledger) async {
+    await homeProvider.addLedger(ledger);
+  }
+
+  void deleteLedger(int id) async {
+    await homeProvider.deleteLedgers(id);
+    state?.data.removeWhere((ledger) => ledger.id == id);
+    change(state, status: RxStatus.success());
   }
 
   @override

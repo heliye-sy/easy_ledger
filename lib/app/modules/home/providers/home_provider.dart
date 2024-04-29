@@ -6,17 +6,6 @@ import '../home_model.dart';
 class HomeProvider extends GetConnect {
   @override
   void onInit() {
-    // httpClient.defaultDecoder = (map) {
-    //   if (map is Map<String, dynamic>) {
-    //     {
-    //       if (map.containsKey('error')){
-    //         return null;
-    //       }
-    //       return User.fromJson(map);
-    //     }
-    //   }
-    // };
-
     httpClient.baseUrl = 'http://111.229.84.51:1337/api';
 
     // 请求拦截
@@ -37,22 +26,23 @@ class HomeProvider extends GetConnect {
   }
 
   // 获取账单记录
-  Future<List<Ledger>?> getLedgers(String userId, String payType) async {
+  Future<Ledgers?> getLedgers(String userId, String payType, [String? page]) async {
     final response = await get(
         '/ledgers',
         query: {
           "filters[user][id][\$eq]": userId,
           "filters[payType][\$eqi]": payType
         });
-    List<Ledger>? ledgers;
-    Pagination pagination;
-    if (response.statusCode == 200) {
-      ledgers = (response.body['data'] as List).map((ledger) => Ledger.fromJson(ledger)).toList();
-    }
+    Ledgers? ledgers = response.statusCode == 200 ? Ledgers.fromJson(response.body) : null;
     return ledgers;
   }
 
-  Future<Response<User>> postUser(User user) async => await post('user', user);
+  // 添加一条账单记录
+  Future<Ledger?> addLedger(Ledger ledger) async {
+    final response = await post('/ledgers', {'data': ledger});
+    Ledger? newLedger = response.statusCode == 200 ? Ledger.fromJson(response.body['data']) : null;
+    return newLedger;
+  }
 
   // 删除一条账单记录
   Future<Response> deleteLedgers(int id) async => await delete('/ledgers/$id');

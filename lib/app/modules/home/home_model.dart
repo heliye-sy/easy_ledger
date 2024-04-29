@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 class User {
   int id;
   String username;
@@ -37,31 +38,30 @@ class User {
       avatar : json['avatar'] != null ? json['avatar']['url'] : null
     );
   }
+}
 
-  Map<String, dynamic> toJson() {
-    final data = <String, dynamic>{};
-    data['id'] = id;
-    data['username'] = username;
-    data['email'] = email;
-    data['provider'] = provider;
-    data['confirmed'] = confirmed;
-    data['blocked'] = blocked;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['balance'] = balance;
-    if (avatar != null) {
-      data['avatar'] = avatar;
-    }
-    return data;
+class Ledgers{
+  List<Ledger> data;
+  Pagination meta;
+
+  Ledgers({
+   required this.data,
+   required this.meta,
+  });
+
+  factory Ledgers.fromJson(Map<String, dynamic> json) {
+    return Ledgers(
+        data: (json['data'] as List).map((ledger) => Ledger.fromJson(ledger)).toList(),
+        meta: Pagination.fromJson(json['meta']['pagination']),
+    );
   }
 }
 
 class Ledger {
   int id;
   String name;
-  num amount;
-  String date;
-  String category;
+  String amount;
+  DateTime date;
   String payType;
   String? remark;
   String createdAt;
@@ -73,7 +73,6 @@ class Ledger {
     required this.name,
     required this.amount,
     required this.date,
-    required this.category,
     required this.payType,
     this.remark,
     required this.createdAt,
@@ -83,12 +82,16 @@ class Ledger {
 
   factory Ledger.fromJson(Map<String, dynamic> json) {
     final productAttributes = json['attributes'];
+    final Map<String, String> mio = {
+      'out': '-',
+      'in': '+'
+    };
+    DateFormat formatter = DateFormat("yyyy-MM-ddTHH:mm:ss.000Z");
     return Ledger(
       id : json['id'],
       name : productAttributes['name'],
-      amount : productAttributes['amount'],
-      date : productAttributes['date'],
-      category : productAttributes['category'],
+      amount : '${mio[productAttributes['category']]!}${productAttributes['amount']}',
+      date : formatter.parse(productAttributes['date']),
       payType : productAttributes['payType'],
       remark : productAttributes['remark'],
       createdAt : productAttributes['createdAt'],
@@ -97,18 +100,19 @@ class Ledger {
     );
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson(String userId) {
+    final Map<String, String> mio = {
+      '-': 'out',
+      '+': 'in'
+    };
     final data = <String, dynamic>{};
-    data['id'] = id;
     data['name'] = name;
-    data['amount'] = amount;
+    data['category'] = mio[amount[0]];
+    data['amount'] = amount.substring(1,-1);
     data['date'] = date;
-    data['category'] = category;
     data['payType'] = payType;
     data['remark'] = remark;
-    data['createdAt'] = createdAt;
-    data['updatedAt'] = updatedAt;
-    data['publishedAt'] = publishedAt;
+    data['user'] = userId;
     return data;
   }
 }

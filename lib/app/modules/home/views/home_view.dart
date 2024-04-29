@@ -1,12 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import 'package:get/get.dart';
-import 'package:screen_go/extensions/responsive_nums.dart';
 import 'package:screen_go/extensions/orienation_type_value.dart';
-import 'package:sidebarx/sidebarx.dart';
 
 
 import '../controllers/home_controller.dart';
@@ -51,71 +46,104 @@ class HomeView extends GetView<HomeController> {
             children: [
               otv(context: context, portrait: const SizedBox(), landscape: const DrawerView()),
               Expanded(
-                child: Center(
-                  child: AnimatedBuilder(
-                    animation: SidebarXController(
-                        selectedIndex: 0,
-                        extended: true
-                    ),
-                    builder: (BuildContext context, Widget? child) {
-                      Map<String, String> mio = {
-                        'out': '-',
-                        'in': '+'
-                      };
-                      return controller.obx(
-                              (ledgers) => ListView(
-                                padding: const EdgeInsets.only(top: 10),
-                                children: ledgers!.map((ledger) => Slidable(
-                                    endActionPane: ActionPane(
-                                      motion: const ScrollMotion(),
-                                      dismissible: DismissiblePane(onDismissed: () {}),
+                child: controller.obx(
+                      (ledgers) {
+                        DateTime time = DateTime();
+                        return ListView(
+                          padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                          children: ledgers!.data.map((ledger) {
+                            return Column(
+                              children: [
 
-                                      children: [
-                                        TextButton.icon(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          label: const Text(
-                                            '删除'
-                                          ),
-                                          onPressed: () => controller.deleteLedgers(ledger.id),
-                                        ),
-                                        SlidableAction(
-                                          onPressed: doNothing,
-                                          backgroundColor: Color(0xFF21B7CA),
-                                          foregroundColor: Colors.white,
-                                          icon: Icons.settings_backup_restore,
-                                          label: '修改',
-                                        ),
-                                      ],
+                                Card(
+                                    elevation: 20,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
                                     ),
-                                    child: Container(
-                                      width: double.infinity,
-                                      margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(20),
-                                        color: const Color(0xFF5B88D0),
-                                        boxShadow: const [BoxShadow()],
-                                      ),
-                                      child: ListTile(
-                                        // leading: Text(ledger.date),
-                                        leading: Text(ledger.id.toString()),
-                                        title: Text(ledger.name),
-                                        subtitle: Text(ledger.remark ?? ''),
-                                        trailing: Text(mio[ledger.category]! + ledger.amount.toString()),
-                                      ),
+                                    margin: const EdgeInsets.all(10),
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          title: Text(ledger.name),
+                                          leading: Text(ledger.date.toString()),
+                                          subtitle: Text(ledger.remark ?? ''),
+                                          trailing: Text(ledger.amount),
+                                        ),
+                                        ButtonBar(
+                                          children: [
+                                            TextButton.icon(
+                                                onPressed: () {
+                                                  Get.dialog(
+                                                    AlertDialog(
+                                                      title: const Text('删除账单'),
+                                                      content: const Text('你确定要删除这条记录吗？'),
+                                                      actions: [
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            controller.deleteLedger(ledger.id);
+                                                            Get.back(); // 返回true作为确认结果
+                                                          },
+                                                          child: const Text('确定'),
+                                                        ),
+                                                        TextButton(
+                                                          onPressed: () {
+                                                            Get.back(result: false); // 返回false作为取消结果
+                                                          },
+                                                          child: const Text('取消'),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  ).then((value) {
+                                                    if (value != null && value == true) {
+                                                      // 用户点击了确认按钮
+                                                    } else {
+                                                      // 用户点击了取消按钮或关闭了对话框
+                                                    }
+                                                  });
+                                                },
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                ),
+                                                label: const Text('删除')
+                                            )
+                                          ],
+                                        )
+                                      ],
                                     )
-                                )).toList(),
-                              ),
-                        onEmpty: const Text('没有数据'), //空数据显示
-                        onError: (error) => Text(error!), //出错界面显示
-                      );
+                                )
+                              ],
+                            );
+                          }).toList(),
+                        );
                       },
-                  ),
+                  onEmpty: const Center(child:Text('没有数据')), //空数据显示
+                  onError: (error) => Center(child: Text(error!)), //出错界面显示
                 ),
               ),
             ],
+          ),
+          floatingActionButton:  FloatingActionButton(
+            onPressed: () {
+              final addFormKey = GlobalKey<FormState>();
+              Get.dialog(
+                  AlertDialog(
+                    title: const Text('添加一条账单记录'),
+                    content: Form(
+                      key: addFormKey,
+                      child: Column(
+                        children: [
+                          TextFormField(
+
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+              );
+            },
+            tooltip: '添加',
+            child: const Icon(Icons.add),
           ),
         )
       ),
@@ -124,4 +152,3 @@ class HomeView extends GetView<HomeController> {
   }
 }
 
-void doNothing(BuildContext context) {}
