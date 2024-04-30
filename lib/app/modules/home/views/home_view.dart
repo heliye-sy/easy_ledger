@@ -26,9 +26,7 @@ class HomeView extends GetView<HomeController> {
           color: Colors.white,
         ),
       ),
-      title: const Text(
-          '主页'
-      ),
+      title: Obx(() => Text(controller.title.value),),
       centerTitle: true,
       titleTextStyle: const TextStyle(
           color: Colors.white
@@ -48,7 +46,7 @@ class HomeView extends GetView<HomeController> {
               Expanded(
                 child: controller.obx(
                       (ledgers) {
-                        DateTime time = DateTime();
+                        // DateTime time = DateTime();
                         return ListView(
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           children: ledgers!.data.map((ledger) {

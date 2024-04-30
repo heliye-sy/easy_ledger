@@ -16,7 +16,8 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
     createdAt: '',
     updatedAt: '',
   ).obs;
-
+  var title = '微信'.obs;
+  var selectedIndex = 0.obs;
   var ledger = Ledger(
       id: 0,
       name: '',
@@ -38,14 +39,27 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
       }
     }
 
-  void getLedgers(String userId, String payType) async {
+  void getLedgers(String payType) async {
+    switch (payType){
+      case 'weChat':
+        title.value = '微信';
+        selectedIndex.value = 0;
+      case 'Alipay':
+        title.value = '支付宝';
+        selectedIndex.value = 1;
+      case 'other':
+        title.value = '其他';
+        selectedIndex.value = 2;
+      default:
+        title.value = '无';
+    }
     //刚开始显示加载中。。
     change(null,status: RxStatus.loading());
     //执行网络请求
-    Ledgers? ledgers = await homeProvider.getLedgers(userId, payType);
+    Ledgers? ledgers = await homeProvider.getLedgers(user.value.id.toString(), payType);
     //请求出错时
     if(ledgers == null){
-      change(ledgers, status: RxStatus.error('获取账单记录失败'));
+      change(ledgers, status: RxStatus.error('获取${title.value}账单失败'));
     }else if (ledgers.data.isNotEmpty){
       //请求成功时，显示数据
       change(ledgers, status: RxStatus.success());
@@ -68,7 +82,7 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
   void onInit() async {
     super.onInit();
     await getUser();
-    if(user.value.id != 0) getLedgers(user.value.id.toString(), "weChat");
+    if(user.value.id != 0) getLedgers("weChat");
   }
 
   void rmJwt() async {

@@ -14,8 +14,8 @@ class LoginView extends GetView<LoginController> {
   Widget build(BuildContext context) {
     Widget logTitle = Obx(() => Text(
       controller.isLogin.value == 'login' ? '登录' : controller.isLogin.value == 'register' ? '注册' : '重置密码',
-      style: TextStyle(
-        fontSize: 30.0.sp,
+      style: const TextStyle(
+        fontSize: 80.0,
         fontFamily: 'SourceHanSerif',
       ),
     ));
@@ -39,14 +39,14 @@ class LoginView extends GetView<LoginController> {
               landscape: Row(
                 children: [
                   Container(
-                    width: 50.w,
-                    height: 100.h,
+                    width: 575.0,
+                    height: 600.0,
                     alignment: Alignment.center,
                     child: logTitle,
                   ),
                   Container(
                     width: 1.0,
-                    height: 80.0.h,
+                    height: 420.0,
                     color: Colors.blue,
                   ),
                   const Expanded(

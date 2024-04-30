@@ -17,9 +17,9 @@ class DrawerView extends GetView<HomeController> {
     final actionColor = const Color(0xFF5F5FA7).withOpacity(0.6);
     final divider = Divider(color: white.withOpacity(0.3), height: 1);
 
-    return SidebarX(
+    return Obx(() => SidebarX(
       controller: SidebarXController(
-          selectedIndex: 0,
+          selectedIndex: controller.selectedIndex.value,
           extended: true
       ),
       theme: SidebarXTheme(
@@ -92,17 +92,17 @@ class DrawerView extends GetView<HomeController> {
       ),
       items: [
         SidebarXItem(
-            onTap: () => controller.getLedgers(controller.user.value.id.toString(), 'weChat'),
+            onTap: () => controller.getLedgers('weChat'),
             icon: Icons.wechat,
             label: '微信'
         ),
         SidebarXItem(
-            onTap: () => controller.getLedgers(controller.user.value.id.toString(), 'Alipay'),
+            onTap: () => controller.getLedgers('Alipay'),
             icon: Ionicons.logo_alipay,
             label: '支付宝'
         ),
         SidebarXItem(
-            onTap: () => controller.getLedgers(controller.user.value.id.toString(), 'other'),
+            onTap: () => controller.getLedgers('other'),
             icon: Icons.menu,
             label: '其他'
         ),
@@ -114,6 +114,6 @@ class DrawerView extends GetView<HomeController> {
         )
       ],
       footerDivider: divider,
-    );
+    ));
   }
 }
