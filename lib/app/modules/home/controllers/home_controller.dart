@@ -94,6 +94,16 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
   // 添加一条账单记录
   void addLedger() async {
     await homeProvider.addLedger(ledger.value, user.value.id);
+    ledger.value = Ledger(
+        id: 0,
+        name: '',
+        amount: '',
+        date: DateTime.now(),
+        remark: '',
+        payType: 'weChat',
+        createdAt: '',
+        updatedAt: ''
+    );
     getLedgers('weChat');
   }
 
@@ -111,7 +121,9 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
 
   // 修改头像
   void setAvatar(XFile pickedFile) async {
-    await homeProvider.postFiles(pickedFile);
+    var response = await homeProvider.postFiles(pickedFile);
+    user.value.avatar?.id = response.body[0]['id'];
+    setUser();
   }
 
   // 修改用户

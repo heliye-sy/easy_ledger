@@ -79,7 +79,6 @@ class HomeProvider extends GetConnect {
           'files': MultipartFile(File(pickedFile.path), filename: pickedFile.name)
         })
     );
-    print(response.request);
     return response;
   }
 

@@ -1,7 +1,8 @@
-import 'package:easy_ledger/utils/dart_date.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:easy_ledger/utils/dart_date.dart';
+import 'package:intl/intl.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -86,7 +87,7 @@ class FormView extends GetView<HomeController> {
                 backgroundColor: Colors.blueAccent,
               ),
               child: Text(
-                '交易日期：${controller.ledger.value.date.year}-${controller.ledger.value.date.month}-${controller.ledger.value.date.day}',
+                '交易日期：${DateFormat('yyyy-MM-dd').format(controller.ledger.value.date)}',
                 style: const TextStyle(
                   color: Colors.black
                 ),
@@ -106,7 +107,7 @@ class FormView extends GetView<HomeController> {
                 backgroundColor: Colors.blueAccent,
               ),
               child: Text(
-                '交易时间：${controller.ledger.value.date.hour}:${controller.ledger.value.date.minute}',
+                '交易时间：${DateFormat('HH:mm').format(controller.ledger.value.date)}',
                 style: const TextStyle(
                     color: Colors.black
                 ),
@@ -150,8 +151,8 @@ class FormView extends GetView<HomeController> {
                       controller.putLedger();
                       controller.setUser();
                   }
+                  Get.back();
                 }
-                Get.back();
               },
               style: ButtonStyle(
                 //背景颜色

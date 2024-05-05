@@ -9,7 +9,7 @@ class User {
   String createdAt;
   String? updatedAt;
   num? balance;
-  String? avatar;
+  Avatar?  avatar;
 
   User({
     required this.id,
@@ -35,16 +35,33 @@ class User {
       createdAt : json['createdAt'],
       updatedAt : json['updatedAt'],
       balance : json['balance'],
-      avatar : json['avatar'] != null ? json['avatar']['url'] : null
+      avatar : json['avatar'] != null ? Avatar.fromJson(json['avatar']) : null
     );
   }
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};
     data['username'] = username;
-    data['avatar'] = avatar;
+    data['avatar'] = avatar?.id;
     data['balance'] = balance;
     return data;
+  }
+}
+
+class Avatar {
+  int id;
+  String url;
+
+  Avatar({
+    required this.id,
+    required this.url,
+  });
+
+  factory Avatar.fromJson(Map<String, dynamic> json) {
+    return Avatar(
+        id: json['id'],
+        url: json['url']
+    );
   }
 }
 

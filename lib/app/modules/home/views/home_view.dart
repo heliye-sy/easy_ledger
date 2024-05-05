@@ -141,13 +141,90 @@ class HomeView extends GetView<HomeController> {
           ),
           floatingActionButton:  FloatingActionButton(
             onPressed: () {
-              controller.ledgerType.value = 'add';
-              Get.dialog(
-                  const AlertDialog(
-                    title: Text('添加一条账单记录'),
-                    content: FormView(),
-                  )
-              );
+              InputDecoration inputDecoration(String labelText) {
+                var customBorder = OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(24),
+                    borderSide: const BorderSide(style: BorderStyle.none)
+                );
+                return InputDecoration(
+                  labelText: labelText,
+                  labelStyle: const TextStyle(
+                    color: Colors.black,
+                  ),
+                  border: customBorder,
+                  enabledBorder:customBorder,
+                  focusedBorder:customBorder,
+                  focusedErrorBorder: customBorder,
+                  errorBorder: customBorder,
+                  filled: true,
+                  fillColor: const Color(0xffF6F6F8),
+                  //隐藏下划线
+                  //border: InputBorder.none,
+                  hintStyle: const TextStyle(fontSize: 15, color: Color(0xffAEAEAE)),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                );
+              }
+              final formKey = GlobalKey<FormState>();
+              if (controller.user.value.balance == null) {
+                Get.dialog(
+                    AlertDialog(
+                      title: const Text('未设置初始金额'),
+                      content: Form(
+                        key: formKey,
+                        child: Column(
+                          children: [
+                            TextFormField(
+                              initialValue: controller.user.value.balance.toString(),
+                              decoration: inputDecoration('初始金额'),
+                              keyboardType: TextInputType.number,
+                              validator: (value) {
+                                if (value!.isEmpty) {
+                                  return '初始金额不能为空';
+                                }
+                                return null;
+                              },
+                              onSaved: (value) => controller.user.value.balance = double.parse(value!),
+                            ),
+                            const SizedBox(height: 20),
+                            TextButton(
+                                onPressed: () {
+                                  if (formKey.currentState!.validate()) {
+                                    formKey.currentState!.save();
+                                    controller.setUser();
+                                    Get.back();
+                                  }
+                                },
+                                style: ButtonStyle(
+                                  //背景颜色
+                                  backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                    //设置按下时的背景颜色
+                                    if (states.contains(MaterialState.pressed)) {
+                                      return Colors.blue[200];
+                                    }
+                                    return Colors.blue;
+                                  }),
+                                ),
+                                child: const Text(
+                                  '确定',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                  ),
+                                )
+                            )
+                          ],
+                        ),
+                      ),
+                    )
+                );
+              } else {
+                controller.ledgerType.value = 'add';
+                Get.dialog(
+                    const AlertDialog(
+                      title: Text('添加一条账单记录'),
+                      content: FormView(),
+                    )
+                );
+              }
             },
             tooltip: '添加',
             child: const Icon(Icons.add),

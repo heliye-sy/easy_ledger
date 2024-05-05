@@ -89,14 +89,114 @@ class DrawerView extends GetView<HomeController> {
                   ?
               FadeInImage(
                 placeholder: Image.asset('assets/images/avatar.png').image,
-                image: NetworkImage('http://111.229.84.51:1337${controller.user.value.avatar}'),
+                image: NetworkImage('http://111.229.84.51:1337${controller.user.value.avatar?.url}'),
               )
                   :
               Image.asset(
                   'assets/images/avatar.png'
               )),
             ),
-            Obx(() => Text(controller.user.value.username)),
+            Obx(() => Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(controller.user.value.username),
+                IconButton(
+                    onPressed: () {
+                      InputDecoration inputDecoration(String labelText) {
+                        var customBorder = OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(24),
+                            borderSide: const BorderSide(style: BorderStyle.none)
+                        );
+                        return InputDecoration(
+                          labelText: labelText,
+                          labelStyle: const TextStyle(
+                            color: Colors.black,
+                          ),
+                          border: customBorder,
+                          enabledBorder:customBorder,
+                          focusedBorder:customBorder,
+                          focusedErrorBorder: customBorder,
+                          errorBorder: customBorder,
+                          filled: true,
+                          fillColor: const Color(0xffF6F6F8),
+                          //隐藏下划线
+                          //border: InputBorder.none,
+                          hintStyle: const TextStyle(fontSize: 15, color: Color(0xffAEAEAE)),
+                          contentPadding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+                        );
+                      }
+                      final formKey = GlobalKey<FormState>();
+                      Get.dialog(
+                          AlertDialog(
+                              title: const Text('修改用户'),
+                              content: Form(
+                                key: formKey,
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      initialValue: controller.user.value.username,
+                                      decoration: inputDecoration('用户名'),
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return '用户名不能为空';
+                                        }
+                                        if (value.length < 3) {
+                                          return '用户名必须至少 3 个字符';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) => controller.user.value.username = value!,
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextFormField(
+                                      initialValue: controller.user.value.balance.toString(),
+                                      decoration: inputDecoration('剩余总钱财'),
+                                      keyboardType: TextInputType.number,
+                                      validator: (value) {
+                                        if (value!.isEmpty) {
+                                          return '剩余总钱财不能为空';
+                                        }
+                                        return null;
+                                      },
+                                      onSaved: (value) => controller.user.value.balance = double.parse(value!),
+                                    ),
+                                    const SizedBox(height: 20),
+                                    TextButton(
+                                        onPressed: () {
+                                          if (formKey.currentState!.validate()) {
+                                            formKey.currentState!.save();
+                                            controller.setUser();
+                                            Get.back();
+                                          }
+                                        },
+                                        style: ButtonStyle(
+                                          //背景颜色
+                                          backgroundColor: MaterialStateProperty.resolveWith((states) {
+                                            //设置按下时的背景颜色
+                                            if (states.contains(MaterialState.pressed)) {
+                                              return Colors.blue[200];
+                                            }
+                                            return Colors.blue;
+                                          }),
+                                        ),
+                                        child: const Text(
+                                          '提交',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                          ),
+                                        )
+                                    )
+                                  ],
+                                ),
+                              ),
+
+                          )
+                      );
+                    },
+                    icon: const Icon(Icons.create)
+                )
+              ],
+            )),
             Obx(() => Text('剩余总钱财：${controller.user.value.balance}'))
           ],
         ),
