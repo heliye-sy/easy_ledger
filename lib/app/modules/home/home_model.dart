@@ -38,6 +38,14 @@ class User {
       avatar : json['avatar'] != null ? json['avatar']['url'] : null
     );
   }
+
+  Map<String, dynamic> toJson() {
+    final data = <String, dynamic>{};
+    data['username'] = username;
+    data['avatar'] = avatar;
+    data['balance'] = balance;
+    return data;
+  }
 }
 
 class Ledgers{
@@ -86,7 +94,7 @@ class Ledger {
       'out': '-',
       'in': '+'
     };
-    DateFormat formatter = DateFormat("yyyy-MM-ddTHH:mm:ss.000Z");
+    DateFormat formatter = DateFormat("yyyy-MM-ddTHH:mm:ss");
     return Ledger(
       id : json['id'],
       name : productAttributes['name'],
@@ -100,19 +108,19 @@ class Ledger {
     );
   }
 
-  Map<String, dynamic> toJson(String userId) {
+  Map<String, dynamic> toJson() {
     final Map<String, String> mio = {
       '-': 'out',
       '+': 'in'
     };
+    DateFormat formatter = DateFormat("yyyy-MM-ddTHH:mm:ss.000Z");
     final data = <String, dynamic>{};
     data['name'] = name;
     data['category'] = mio[amount[0]];
-    data['amount'] = amount.substring(1,-1);
-    data['date'] = date;
+    data['amount'] = amount.substring(1);
+    data['date'] = formatter.format(date);
     data['payType'] = payType;
     data['remark'] = remark;
-    data['user'] = userId;
     return data;
   }
 }

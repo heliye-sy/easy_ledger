@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:screen_go/extensions/orienation_type_value.dart';
 
-
 import '../controllers/home_controller.dart';
 import '../../window_wiget.dart';
 import 'drawer_view.dart';
+import 'form_view.dart';
 
 class HomeView extends GetView<HomeController> {
   HomeView({super.key});
@@ -52,7 +52,6 @@ class HomeView extends GetView<HomeController> {
                           children: ledgers!.data.map((ledger) {
                             return Column(
                               children: [
-
                                 Card(
                                     elevation: 20,
                                     shape: RoundedRectangleBorder(
@@ -71,6 +70,23 @@ class HomeView extends GetView<HomeController> {
                                           children: [
                                             TextButton.icon(
                                                 onPressed: () {
+                                                  controller.ledgerType.value = 'put';
+                                                  controller.ledger.value = ledger;
+                                                  Get.dialog(
+                                                      const AlertDialog(
+                                                      title: Text('修改账单'),
+                                                      content: FormView(),
+                                                    )
+                                                  );
+                                                },
+                                                icon: const Icon(
+                                                  Icons.settings_rounded,
+                                                  color: Colors.green,
+                                                ),
+                                                label: const Text('修改')
+                                            ),
+                                            TextButton.icon(
+                                                onPressed: () {
                                                   Get.dialog(
                                                     AlertDialog(
                                                       title: const Text('删除账单'),
@@ -78,8 +94,10 @@ class HomeView extends GetView<HomeController> {
                                                       actions: [
                                                         TextButton(
                                                           onPressed: () {
+                                                            controller.delFromString(ledger.amount);
                                                             controller.deleteLedger(ledger.id);
-                                                            Get.back(); // 返回true作为确认结果
+                                                            controller.setUser();
+                                                            Get.back();
                                                           },
                                                           child: const Text('确定'),
                                                         ),
@@ -123,20 +141,11 @@ class HomeView extends GetView<HomeController> {
           ),
           floatingActionButton:  FloatingActionButton(
             onPressed: () {
-              final addFormKey = GlobalKey<FormState>();
+              controller.ledgerType.value = 'add';
               Get.dialog(
-                  AlertDialog(
-                    title: const Text('添加一条账单记录'),
-                    content: Form(
-                      key: addFormKey,
-                      child: Column(
-                        children: [
-                          TextFormField(
-
-                          )
-                        ],
-                      ),
-                    ),
+                  const AlertDialog(
+                    title: Text('添加一条账单记录'),
+                    content: FormView(),
                   )
               );
             },

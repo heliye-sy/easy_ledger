@@ -6,7 +6,7 @@ import 'package:screen_go/screen_go.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 
 import 'app/routes/app_pages.dart';
-import 'platform_utils.dart';
+import 'utils/platform_utils.dart';
 
 void main() {
   runApp(

@@ -13,6 +13,8 @@ dependencies:
   screen_go: ^1.1.6
   sidebarx: ^0.17.1
   ionicons: ^0.2.2
+  timeago: ^3.6.1
+  image_picker: ^1.1.1
   flutter: 
     sdk: flutter
 

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:easy_ledger/platform_utils.dart';
+import 'package:easy_ledger/utils/platform_utils.dart';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 
 class CustomWindow extends StatelessWidget {

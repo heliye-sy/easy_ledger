@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../home_model.dart';
@@ -18,15 +19,17 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
   ).obs;
   var title = '微信'.obs;
   var selectedIndex = 0.obs;
+  var ledgerType = ''.obs;
   var ledger = Ledger(
       id: 0,
       name: '',
       amount: '',
       date: DateTime.now(),
-      payType: '',
+      remark: '',
+      payType: 'weChat',
       createdAt: '',
       updatedAt: ''
-  );
+  ).obs;
 
   Future<void> getUser() async {
       User? userH = await homeProvider.getUser();
@@ -68,14 +71,53 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
     }
   }
 
-  void addLedger(Ledger ledger) async {
-    await homeProvider.addLedger(ledger);
+  //
+  void addFromString() {
+    switch (ledger.value.amount[0]) {
+      case "+":
+        user.value.balance = user.value.balance! + (num.tryParse(ledger.value.amount.substring(1)) ?? 0);
+      case "-":
+        user.value.balance = user.value.balance! - (num.tryParse(ledger.value.amount.substring(1)) ?? 0);
+    }
   }
 
+  void delFromString(String amount) {
+    switch (amount[0]) {
+      case "+":
+        user.value.balance = user.value.balance! - (num.tryParse(amount.substring(1)) ?? 0);
+      case "-":
+        user.value.balance = user.value.balance! + (num.tryParse(amount.substring(1)) ?? 0);
+    }
+  }
+
+
+  // 添加一条账单记录
+  void addLedger() async {
+    await homeProvider.addLedger(ledger.value, user.value.id);
+    getLedgers('weChat');
+  }
+
+  // 删除一条账单记录
   void deleteLedger(int id) async {
     await homeProvider.deleteLedgers(id);
-    state?.data.removeWhere((ledger) => ledger.id == id);
-    change(state, status: RxStatus.success());
+    getLedgers('weChat');
+  }
+
+  // 修改一条账单记录
+  void putLedger() async {
+    await homeProvider.putLedger(ledger.value);
+    getLedgers('weChat');
+  }
+
+  // 修改头像
+  void setAvatar(XFile pickedFile) async {
+    await homeProvider.postFiles(pickedFile);
+  }
+
+  // 修改用户
+  void setUser() async {
+    await homeProvider.putUser(user.value);
+    await getUser();
   }
 
   @override
@@ -85,6 +127,7 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
     if(user.value.id != 0) getLedgers("weChat");
   }
 
+  // 退出登录
   void rmJwt() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('jwt');

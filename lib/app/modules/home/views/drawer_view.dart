@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:ionicons/ionicons.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -75,16 +76,26 @@ class DrawerView extends GetView<HomeController> {
         padding: const EdgeInsets.fromLTRB(16, 50, 16, 0),
         child: Column(
           children: [
-            Obx(() => controller.user.value.avatar != null
-                ?
-            FadeInImage(
-              placeholder: Image.asset('assets/images/avatar.png').image,
-              image: NetworkImage('http://111.229.84.51:1337${controller.user.value.avatar}'),
-            )
-                :
-            Image.asset(
-                'assets/images/avatar.png'
-            )),
+            GestureDetector(
+              onTap: () async {
+                final picker = ImagePicker(); // 创建ImagePicker实例
+                final XFile? pickedFile =
+                    await picker.pickImage(source: ImageSource.gallery); // 从图库中选择图像
+                if (pickedFile != null) {
+                  controller.setAvatar(pickedFile);
+                }
+              },
+              child: Obx(() => controller.user.value.avatar != null
+                  ?
+              FadeInImage(
+                placeholder: Image.asset('assets/images/avatar.png').image,
+                image: NetworkImage('http://111.229.84.51:1337${controller.user.value.avatar}'),
+              )
+                  :
+              Image.asset(
+                  'assets/images/avatar.png'
+              )),
+            ),
             Obx(() => Text(controller.user.value.username)),
             Obx(() => Text('剩余总钱财：${controller.user.value.balance}'))
           ],
