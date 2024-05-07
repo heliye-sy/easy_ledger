@@ -140,6 +140,14 @@ class Ledger {
     data['remark'] = remark;
     return data;
   }
+
+  void reset(){
+    name = '';
+    amount = '';
+    date = DateTime.now();
+    remark = '';
+    payType = 'weChat';
+  }
 }
 
 class Pagination {

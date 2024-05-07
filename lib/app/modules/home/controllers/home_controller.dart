@@ -36,6 +36,12 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
   @override
   void onInit() async {
     super.onInit();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String jwt = prefs.getString('jwt') ?? '';
+    if (jwt == '') {
+      Get.offAllNamed('login');
+      return null;
+    }
     scrollController.addListener(onScroll);
     await getUser();
     if(user.value.id != 0) getLedgers("weChat");
@@ -86,16 +92,6 @@ class HomeController extends GetxController with StateMixin<Ledgers>{
   // 添加一条账单记录
   void addLedger() async {
     await homeProvider.addLedger(ledger.value, user.value.id);
-    ledger.value = Ledger(
-        id: 0,
-        name: '',
-        amount: '',
-        date: DateTime.now(),
-        remark: '',
-        payType: 'weChat',
-        createdAt: '',
-        updatedAt: ''
-    );
     getLedgers('weChat');
   }
 

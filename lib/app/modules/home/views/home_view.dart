@@ -217,6 +217,7 @@ class HomeView extends GetView<HomeController> {
                     )
                 );
               } else {
+                controller.ledger.value.reset();
                 controller.ledgerType.value = 'add';
                 Get.dialog(
                     const AlertDialog(

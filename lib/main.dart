@@ -32,6 +32,7 @@ void main() {
     doWhenWindowReady(() {
       const initialSize = Size(1150, 600);
       appWindow.minSize = initialSize;
+      appWindow.maxSize = initialSize;
       appWindow.size = initialSize;
       appWindow.alignment = Alignment.center;
       appWindow.title = "轻松记账";
