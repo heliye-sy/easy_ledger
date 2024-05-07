@@ -41,7 +41,7 @@ class HomeProvider extends GetConnect {
   }
 
   // 获取账单记录
-  Future<Ledgers?> getLedgers(String userId, String payType, [String? page]) async {
+  Future<Ledgers?> getLedgers(String userId, String payType, [int? page]) async {
     final response = await get(
         '/ledgers',
         query: {
@@ -69,7 +69,11 @@ class HomeProvider extends GetConnect {
   }
 
   // 删除一条账单记录
-  Future<Response> deleteLedgers(int id) async => await delete('/ledgers/$id');
+  Future<Ledger?> deleteLedgers(int id) async {
+    final response = await delete('/ledgers/$id');
+    Ledger? newLedger = response.statusCode == 200 ? Ledger.fromJson(response.body['data']) : null;
+    return newLedger;
+  }
 
   // 上传文件
   Future<Response> postFiles(XFile pickedFile) async {

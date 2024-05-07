@@ -46,8 +46,8 @@ class HomeView extends GetView<HomeController> {
               Expanded(
                 child: controller.obx(
                       (ledgers) {
-                        // DateTime time = DateTime();
                         return ListView(
+                          controller: controller.scrollController,
                           padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                           children: ledgers!.data.map((ledger) {
                             return Column(
